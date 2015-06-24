@@ -1,0 +1,46 @@
+---
+- name: configure mailname
+  template:
+    src: etc/mailname.j2
+    dest: /etc/mailname
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart postfix
+
+- name: update configuration file
+  template:
+    src: etc/postfix/main.cf.j2
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart postfix
+
+- name: configure sasl username/password
+  template:
+    src: etc/postfix/sasl_passwd.j2
+    dest: /etc/postfix/sasl_passwd
+    owner: root
+    group: root
+    mode: 0600
+  when: postfix_relayhost != false
+  notify:
+    - postmap sasl_passwd
+    - restart postfix
+
+- name: configure aliases
+  lineinfile:
+    dest: /etc/aliases
+    regexp: '^{{ item.user }}:\s+{{ item.alias }}'
+    line: '{{ item.user }}: {{ item.alias }}'
+    owner: root
+    group: root
+    mode: 0644
+  with_items: postfix_aliases
+  when: postfix_aliases
+  notify:
+    - new aliases
+    - restart postfix
+
+

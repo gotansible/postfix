@@ -1,0 +1,12 @@
+---
+- hosts: all
+  sudo: true
+  roles:
+    - role: postfix
+      postfix_aliases:
+      - user: root
+        alias: myuser@gmail.com
+      postfix_relayhost: smtp.example.com
+      postfix_relaytls: true
+      postfix_sasl_user: test
+      postfix_sasl_password: test

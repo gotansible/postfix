@@ -1,0 +1,11 @@
+---
+- name: restart postfix
+  service:
+    name: postfix
+    state: restarted
+
+- name: new aliases
+  command: newaliases
+
+- name: postmap sasl_passwd
+  command: postmap /etc/postfix/sasl_passwd
