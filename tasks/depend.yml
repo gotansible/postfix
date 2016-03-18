@@ -1,19 +1,19 @@
 ---
 
-- name: depend - packages
-  apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
-  with_items: postfix_dependencies
-
 - name: depnd - debconf
   debconf:
     name: "{{ item.name }}"
     question: "{{ item.question }}"
     value: "{{ item.value }}"
     vtype: "{{ item.vtype }}"
-  with_items: postfix_debconf
+  with_items: "{{ postfix_debconf }}"
+
+- name: depend - packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+  with_items: "{{ postfix_dependencies }}"
 
 
